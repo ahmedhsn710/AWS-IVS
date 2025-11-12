@@ -24,8 +24,17 @@ declare global {
 }
 
 export default function BroadcastPage() {
-  const [ingestEndpoint, setIngestEndpoint] = useState('')
-  const [streamKey, setStreamKey] = useState('')
+  // Load from environment variables if available
+  const [ingestEndpoint, setIngestEndpoint] = useState(
+    typeof window !== 'undefined' && process.env.NEXT_PUBLIC_IVS_INGEST_ENDPOINT 
+      ? process.env.NEXT_PUBLIC_IVS_INGEST_ENDPOINT 
+      : ''
+  )
+  const [streamKey, setStreamKey] = useState(
+    typeof window !== 'undefined' && process.env.NEXT_PUBLIC_IVS_STREAM_KEY 
+      ? process.env.NEXT_PUBLIC_IVS_STREAM_KEY 
+      : ''
+  )
   const [isBroadcasting, setIsBroadcasting] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
   const [status, setStatus] = useState('Not connected')
@@ -42,9 +51,9 @@ export default function BroadcastPage() {
   const streamRef = useRef<MediaStream | null>(null)
 
   useEffect(() => {
-    // Load IVS Broadcast SDK
+    // Load IVS Broadcast SDK (using latest version)
     const script = document.createElement('script')
-    script.src = 'https://web-broadcast.live-video.net/1.6.0/amazon-ivs-web-broadcast.js'
+    script.src = 'https://web-broadcast.live-video.net/1.30.0/amazon-ivs-web-broadcast.js'
     script.async = true
     script.onload = () => {
       setIsInitialized(true)
@@ -68,8 +77,9 @@ export default function BroadcastPage() {
   const initializeDevices = async () => {
     try {
       // Request permissions and get stream
+      // Using 480p (852x480) for low latency as per AWS recommendations
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: 1280, height: 720 }, 
+        video: { width: 852, height: 480 }, 
         audio: true 
       })
       
@@ -126,8 +136,9 @@ export default function BroadcastPage() {
       }
       
       // Get new stream with selected devices
+      // Using 480p (852x480) for low latency
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { deviceId: selectedCamera, width: 1280, height: 720 }, 
+        video: { deviceId: selectedCamera, width: 852, height: 480 }, 
         audio: { deviceId: selectedMicrophone } 
       })
       
@@ -159,6 +170,8 @@ export default function BroadcastPage() {
         throw new Error('IVS SDK not loaded')
       }
 
+      // Create client with STANDARD_LANDSCAPE preset
+      // We use 480p in getUserMedia below to reduce latency while keeping quality
       const client = await window.IVSBroadcastClient.create({
         streamConfig: window.IVSBroadcastClient.STANDARD_LANDSCAPE,
         ingestEndpoint: ingestEndpoint,
@@ -167,11 +180,13 @@ export default function BroadcastPage() {
       broadcastClientRef.current = client
 
       // Get media stream with selected devices (combined video + audio)
+      // Using 480p resolution for low latency
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { 
           deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          width: { ideal: 852 },
+          height: { ideal: 480 },
+          frameRate: { ideal: 30, max: 30 }
         },
         audio: { 
           deviceId: selectedMicrophone ? { exact: selectedMicrophone } : undefined

@@ -16,6 +16,10 @@ interface IVSPlayer {
   delete: () => void
   addEventListener: (event: string, callback: (event: any) => void) => void
   removeEventListener: (event: string, callback: (event: any) => void) => void
+  // Low-latency configuration methods
+  setLiveLowLatencyEnabled: (enabled: boolean) => void
+  setAutoplay: (enabled: boolean) => void
+  setRebufferToLive: (enabled: boolean) => void
 }
 
 declare global {
@@ -47,7 +51,12 @@ declare global {
 }
 
 export default function WatchPage() {
-  const [playbackUrl, setPlaybackUrl] = useState('')
+  // Load from environment variables if available
+  const [playbackUrl, setPlaybackUrl] = useState(
+    typeof window !== 'undefined' && process.env.NEXT_PUBLIC_IVS_PLAYBACK_URL 
+      ? process.env.NEXT_PUBLIC_IVS_PLAYBACK_URL 
+      : ''
+  )
   const [isPlaying, setIsPlaying] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
   const [playerState, setPlayerState] = useState('IDLE')
@@ -60,9 +69,9 @@ export default function WatchPage() {
   const videoElementRef = useRef<HTMLVideoElement | null>(null)
 
   useEffect(() => {
-    // Load IVS Player SDK
+    // Load IVS Player SDK (using latest version for best low-latency performance)
     const script = document.createElement('script')
-    script.src = 'https://player.live-video.net/1.26.0/amazon-ivs-player.min.js'
+    script.src = 'https://player.live-video.net/1.32.0/amazon-ivs-player.min.js'
     script.async = true
     script.onload = () => {
       if (window.IVSPlayer?.isPlayerSupported) {
@@ -102,9 +111,21 @@ export default function WatchPage() {
       
       videoElementRef.current = videoElement
       
-      // Create IVS player and attach to video element
+      // Create IVS player with low-latency configuration
       const player = window.IVSPlayer.create()
       player.attachHTMLVideoElement(videoElement)
+      
+      // Enable low-latency mode for minimal delay
+      // This is CRITICAL for achieving 2-4 second latency
+      player.setLiveLowLatencyEnabled(true)
+      
+      // Set autoplay with minimal initial buffering for faster startup
+      player.setAutoplay(true)
+      
+      // Set rebuffer to target minimal latency
+      // Lower values = lower latency but may increase rebuffering
+      player.setRebufferToLive(true)
+      
       playerRef.current = player
 
       // Set up event listeners
