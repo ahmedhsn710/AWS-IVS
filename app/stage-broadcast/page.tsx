@@ -45,7 +45,7 @@ interface Stage {
 }
 
 export default function StageBroadcastPage() {
-  const [participantToken, setParticipantToken] = useState('')
+  const [participantToken, setParticipantToken] = useState('eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3NjM2MjAyMTAsImlhdCI6MTc2MzAxNTQxMCwianRpIjoibzR3UmhEcmZ2NmFIIiwicmVzb3VyY2UiOiJhcm46YXdzOml2czp1cy1lYXN0LTE6ODUxNzI1MjA2NzI3OnN0YWdlL0RsNFE5Ukh1VDBVcSIsInRvcGljIjoiRGw0UTlSSHVUMFVxIiwiZXZlbnRzX3VybCI6IndzczovL2dsb2JhbC5ldmVudHMubGl2ZS12aWRlby5uZXQiLCJ3aGlwX3VybCI6Imh0dHBzOi8vNDhjNTQxYjMwMDZmLmdsb2JhbC1ibS53aGlwLmxpdmUtdmlkZW8ubmV0IiwiY2FwYWJpbGl0aWVzIjp7ImFsbG93X3B1Ymxpc2giOnRydWUsImFsbG93X3N1YnNjcmliZSI6dHJ1ZX0sInZlcnNpb24iOiIwLjAifQ.MGQCMAhciqhqLT9DmDQuNCk6VrDTVg7vrsTc5jkRHbim-A2-WIBb2rI6jIAM2uC4bvS4vgIwGPkyL6Dv69audqd2QZZfLZjTnyibhgsHH-TrlzOdXJuZWcr9KNFEnYLeSw2siteh')
   const [isConnected, setIsConnected] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
   const [status, setStatus] = useState('Not connected')

@@ -57,7 +57,7 @@ interface Stage {
 }
 
 export default function StageWatchPage() {
-  const [participantToken, setParticipantToken] = useState('')
+  const [participantToken, setParticipantToken] = useState('eyJhbGciOiJLTVMiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3NjM2MjAyMzEsImlhdCI6MTc2MzAxNTQzMSwianRpIjoibWI5Q0ZzMEViRkJEIiwicmVzb3VyY2UiOiJhcm46YXdzOml2czp1cy1lYXN0LTE6ODUxNzI1MjA2NzI3OnN0YWdlL0RsNFE5Ukh1VDBVcSIsInRvcGljIjoiRGw0UTlSSHVUMFVxIiwiZXZlbnRzX3VybCI6IndzczovL2dsb2JhbC5ldmVudHMubGl2ZS12aWRlby5uZXQiLCJ3aGlwX3VybCI6Imh0dHBzOi8vNDhjNTQxYjMwMDZmLmdsb2JhbC1ibS53aGlwLmxpdmUtdmlkZW8ubmV0IiwiY2FwYWJpbGl0aWVzIjp7ImFsbG93X3N1YnNjcmliZSI6dHJ1ZX0sInZlcnNpb24iOiIwLjAifQ.MGYCMQCHwKdmpZ6FwXtiLTDxopQ8R5hA9e_k9dGHeN7WdF2NIv_IPOi8EzyLJ0xxfyRIyzgCMQCq0__oj-pKH1Q5zph26dGkon4LGhalT1EIRhT_DneQBu7wGq_mGb10DmF-djfm_yA')
   const [isConnected, setIsConnected] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
   const [status, setStatus] = useState('Not connected')
